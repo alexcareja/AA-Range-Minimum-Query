@@ -14,7 +14,7 @@ def genInFile(index):
 		Pe urmatoarea linie N intregi, reprezentand elementele vectorului
 		Pe urmatoarele M linii, perechile de indecsi pentru RMQ
 	"""
-	N = 400
+	N = 40
 	M = randint(0, N * (N - 1) / 2)
 	vector = []
 	for i in range(0,N):
@@ -35,5 +35,5 @@ def genInFile(index):
 			file.write("\n" + str(x) + " " + str(y))
 	return
 
-for i in range(10,11):
+for i in range(10):
 	genInFile(i)
