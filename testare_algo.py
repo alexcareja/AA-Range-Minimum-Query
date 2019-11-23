@@ -1,48 +1,23 @@
 from rmq_banal import RMQ_banal
 from rmq_sparse import RMQSparse
-
-class Input():
-
-	def __init__(self):
-		self.vector = []
-		self.indexes = []
-		self.N = 0
-		self.M = 0
-
-	def getVector(self):
-		return self.vector
-
-	def getIndexes(self):
-		return self.indexes
-
-	def readData(self, in_file):
-		data = []
-		with open(in_file, "r") as file:
-			for line in file:
-				line_int = list(map(int, line.split()))
-				for num in line_int:
-					data.append(num)
-		data.reverse()
-		self.N = data.pop()
-		self.M = data.pop()
-		for i in range(self.N):
-			self.vector.append(data.pop())
-		for i in range(self.M):
-			(x, y) = (data.pop(), data.pop())
-			self.indexes.append((x, y))
+from farach_colton_benders import RMQFCB
+from Input_Class import Input
 
 inp = Input()
-for i in range(10, 11):
-	inp.readData(f"test{i}.in")
-	sparse = RMQSparse(inp.getVector())
-	sparse.preprocess()
+for t in range(5,7):
+	inp.readData(f"test{t}.in")
+	#algo = RMQSparse(inp.getVector())
+	algo = RMQFCB(inp.getVector())
+	algo.preprocess()
 	passed = True
 	for (x, y) in inp.getIndexes():
 		try:
-			assert RMQ_banal(inp.getVector(), x, y) == sparse.RMQ(x, y)
+			#assert RMQ_banal(inp.getVector(), x, y) == algo.RMQ(x, y)
+			print(str(RMQ_banal(inp.getVector(), x, y)) + " " 
+			+ str((algo.RMQ(x, y))))
 		except AssertionError:
 			passed = False
-			print(f"Failed test{i}.in!\n")
+			print(f"test{t}.in" + "."*25 + "failed!\n")
 			break
 	if passed:
-		print(f"test{i}.in passed")
+		print(f"test{t}.in" + "."*25 + "passed!")
