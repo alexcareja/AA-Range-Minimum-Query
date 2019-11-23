@@ -1,13 +1,17 @@
 class Node():
 	
-	def __init__(self, num):
+	def __init__(self, num, index):
 		self.num = num
+		self.index = index
 		self.parent = None
 		self.left = None
 		self.right = None
 
 	def __str__(self):
 		return str(self.num)
+
+	def getIndex(self):
+		return self.index
 
 	def getLeft(self):
 		return self.left
@@ -36,7 +40,7 @@ class LCA():
 
 	def __init__(self, n):
 		self.n = n
-		self.adj = [[]]
+		#self.adj = [[]]
 		self.block_size = 0
 		self.block_cnt = 0
 		self.fist_visit = []
@@ -47,15 +51,27 @@ class LCA():
 		self.blocks = [[[]]]
 		self.block_mask = []
 
-	def dfs(self, v, p, h):
+	def dfs(self, node, h):
+		if(node == None):
+			return
+		v = node.getIndex()
 		self.first_visit[v] = len(self.euler_tour)
 		self.euler_tour.append(v)
 		self.height[v] = h
-		for u in self.adj[v]:
-			if u == p:
-				continue
-			self.dfs(u, v, h + 1)
+		next_node = node.getLeft()
+		if(next_node != None):
+			self.dfs(next_node, h + 1)
 			self.euler_tour.append(v)
+		next_node = node.getRight()
+		if(next_node != None):
+			self.dfs(next_node, h + 1)
+			self.euler_tour.append(v)
+
+		#for u in self.adj[v]:
+		#	if u == p:
+		#		continue
+		#	self.dfs(u, v, h + 1)
+		#	self.euler_tour.append(v)
 
 	def min_by_h(self, i, j):
 		if self.height[self.euler_tour[i]] < self.height[self.euler_tour[j]]:
@@ -66,16 +82,16 @@ class LCA():
 		# get euler tour & indices of first occurences
 		self.first_visit = [-1 for i in range(self.n)]
 		self.height = [0 for i in range(self.n)]
-		self.dfs(root, -1, 0)
+		self.dfs(root, 0)
 
 		# precompute all log values
 		m = len(self.euler_tour)
 		self.log_2.append(-1)
 		for i in range(1, m + 1):
-			self.log_2.append(self.log_2[i / 2] + 1)
+			self.log_2.append(self.log_2[i // 2] + 1)
 
-		self.block_size = max(1, self.log_2[m] / 2)
-		self.block_cnt = (m + self.block_size -1) / self.block_size
+		self.block_size = max(1, self.log_2[m] // 2)
+		self.block_cnt = (m + self.block_size -1) // self.block_size
 
 		# precompute minimum of each block and build sparse table
 		self.st = [ [0 for j in range(self.log_2[self.block_cnt] + 1)] 
@@ -111,10 +127,10 @@ class LCA():
 
 		# precompute RMQ for each block
 		possibilities = 1 << (self.block_size - 1)
-		self.blocks = [None for i in range(possibilities)]
+		self.blocks = [[] for i in range(possibilities)]
 		for b in range(self.block_cnt):
 			mask = self.block_mask[b]
-			if len(self.blocks[mask]) != None:
+			if len(self.blocks[mask]) != 0:
 				continue
 			self.blocks[mask] = [ [0 for i in range(self.block_size)] 
 								for j in range(self.block_size) ]
@@ -136,8 +152,8 @@ class LCA():
 		r = self.first_visit[u]
 		if l > r:
 			l, r = r, l
-		bl = l / self.block_size
-		br = r / self.block_size
+		bl = l // self.block_size
+		br = r // self.block_size
 		if bl == br:
 			return self.euler_tour[self.lca_in_block(bl, 1 % self.block_size, r % self.block_size)]
 		ans1 = self.lca_in_block(bl, l % self.block_size, self.block_size - 1);
@@ -146,13 +162,13 @@ class LCA():
 		if bl + 1 < br:
 			l = self.log_2[br - bl - 1];
 			ans3 = self.st[bl + 1][l];
-			ans4 = .selfst[br - (1 << l)][l];
+			ans4 = self.st[br - (1 << l)][l];
 			ans = self.min_by_h(ans, self.min_by_h(ans3, ans4));
 		return self.euler_tour[ans]
 
 
-#vector = [22, 123, 2, 10, 25, 6, 90, 95, 92, 1, 5, 7, 21, 42, 2, 1, 4, 5, 22, 10, 3, 99, 1, 4]
-vector = [6, 9, 2, 4, 7, 8, 5, 8, 3, 7]
+vector = [22, 123, 2, 10, 25, 6, 90, 95, 92, 1, 5, 7, 21, 42, 2, 1, 4, 5, 22, 10, 3, 99, 1, 4]
+#vector = [6, 9, 2, 4, 7, 8, 5, 8, 3, 7]
 N = len(vector)
 parent = [-1 for i in range(N)]
 stack = []
@@ -173,7 +189,7 @@ nodes = []
 # crearea legaturilor din tree
 i = 0
 for num in vector:
-	new_node = Node(num)
+	new_node = Node(num, i)
 	nodes.append(new_node)
 	if parent[i] == -1:
 		root = new_node
@@ -186,4 +202,9 @@ for i in range(N):
 			nodes[parent[i]].setRight(current_node)
 		else:
 			nodes[parent[i]].setLeft(current_node)
-preorder(root)
+#preorder(root)
+rmq = LCA(N)
+rmq.precompute_lca(root)
+a = rmq.lca(17, 20)
+print(a)
+print(vector[a])
