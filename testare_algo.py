@@ -1,6 +1,6 @@
 from rmq_banal import RMQ_banal
 from rmq_sparse import RMQSparse
-from farach_colton_benders import RMQFCB
+from farach_colton_bender import RMQFCB
 from segment_tree import RMQSegment
 from Input_Class import Input
 import filecmp
