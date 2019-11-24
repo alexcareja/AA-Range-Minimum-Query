@@ -5,16 +5,17 @@ from segment_tree import RMQSegment
 from Input_Class import Input
 import filecmp
 
-N_TESTS = 11
+N_TESTS = 10
 DOTS = 31
 
 inp = Input()
 for t in range(0,N_TESTS):
 	inp.readData(f"in/test{t}.in")
 	#algo = RMQSparse(inp.getVector())
-	algo = RMQFCB(inp.getVector())
-	#algo = RMQSegment(inp.getVector())
+	#algo = RMQFCB(inp.getVector())
+	algo = RMQSegment(inp.getVector())
 	algo.preprocess()
+	algo.printAlgo()
 	passed = True
 	with open(f"out/test{t}.out", "w") as file:
 		for (x, y) in inp.getIndexes():

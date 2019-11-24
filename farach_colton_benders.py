@@ -1,6 +1,7 @@
 from node import Node
 
 class RMQFCB():
+	PRINT = False
 
 	def __init__(self, vector):
 		self.vector = vector
@@ -167,3 +168,8 @@ class RMQFCB():
 
 	def RMQ(self, x, y):
 		return self.lca(x, y)
+
+	def printAlgo(self):
+		if RMQFCB.PRINT == False:
+			print("Testing Cartesian Tree and Farach-Colton and Bender algorithm...")
+			RMQFCB.PRINT = True

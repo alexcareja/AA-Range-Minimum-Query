@@ -4,6 +4,7 @@ from math import ceil,log2
 INT_MAX = sys.maxsize
 
 class RMQSegment():
+    PRINT = False
 
     def __init__(self, vector):
         self.vector = vector
@@ -61,3 +62,8 @@ class RMQSegment():
     
     def RMQ(self, x, y):
         return self.RMQUtil(0, self.n - 1, x, y, 0) 
+
+    def printAlgo(self):
+        if RMQSegment.PRINT == False:
+            print("Testing Segment Tree...")
+            RMQSegment.PRINT = True

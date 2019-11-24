@@ -1,5 +1,6 @@
 
 class RMQSparse():
+	PRINT = False
 
 	def __init__(self, vector):
 		self.vector = vector
@@ -18,3 +19,8 @@ class RMQSparse():
 
 	def RMQ(self, x, y):
 		return self.vector[self.lookup[x][y]]
+
+	def printAlgo(self):
+		if RMQSparse.PRINT == False:
+			print("Testing Sparse Table...")
+			RMQSparse.PRINT = True
