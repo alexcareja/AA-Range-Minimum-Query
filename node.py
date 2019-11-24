@@ -11,6 +11,9 @@ class Node():
 	def __str__(self):
 		return str(self.num)
 
+	def getNum(self):
+		return self.num
+
 	def getIndex(self):
 		return self.index
 

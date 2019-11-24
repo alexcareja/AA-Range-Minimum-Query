@@ -66,7 +66,9 @@ class RMQFCB():
 			self.euler_tour.append(v)
 
 	def minByH(self, i, j):
-		if self.height[self.euler_tour[i]] < self.height[self.euler_tour[j]]:
+		a = self.euler_tour[i]
+		b = self.euler_tour[j]
+		if self.height[a] < self.height[b]:
 			return i
 		return j
 

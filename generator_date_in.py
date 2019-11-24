@@ -1,5 +1,6 @@
 from random import randint
 
+MAX_INT = 10000
 def genIndexTuple(N):
 	(x, y) = (randint(0, N - 1), randint(0,N - 1))
 	if x > y:
@@ -14,11 +15,11 @@ def genInFile(index):
 		Pe urmatoarea linie N intregi, reprezentand elementele vectorului
 		Pe urmatoarele M linii, perechile de indecsi pentru RMQ
 	"""
-	N = 40
-	M = randint(0, N * (N - 1) / 2)
+	N = 15000
+	M = 15000
 	vector = []
 	for i in range(0,N):
-		vector.append(randint(0, 200))
+		vector.append(randint(0, MAX_INT))
 	indexes = []
 	for i in range(0, M):
 		while True:
@@ -35,5 +36,5 @@ def genInFile(index):
 			file.write("\n" + str(x) + " " + str(y))
 	return
 
-for i in range(10):
+for i in range(10,11):
 	genInFile(i)

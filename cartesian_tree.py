@@ -28,13 +28,6 @@ class Node():
 	def setRight(self, node):
 		self.right = node
 
-def preorder(node):
-	if node == None:
-		return
-	print(node)
-	preorder(node.getLeft())
-	preorder(node.getRight())
-
 
 class LCA():
 
@@ -43,7 +36,7 @@ class LCA():
 		#self.adj = [[]]
 		self.block_size = 0
 		self.block_cnt = 0
-		self.fist_visit = []
+		self.first_visit = []
 		self.euler_tour = []
 		self.height = []
 		self.log_2 = []
@@ -67,14 +60,14 @@ class LCA():
 			self.dfs(next_node, h + 1)
 			self.euler_tour.append(v)
 
-		#for u in self.adj[v]:
-		#	if u == p:
-		#		continue
-		#	self.dfs(u, v, h + 1)
-		#	self.euler_tour.append(v)
-
 	def min_by_h(self, i, j):
-		if self.height[self.euler_tour[i]] < self.height[self.euler_tour[j]]:
+		if(i >= len(self.euler_tour)):
+			i = len(self.euler_tour) - 1
+		if(j >= len(self.euler_tour)):
+			j = len(self.euler_tour) - 1
+		a = self.euler_tour[i]
+		b = self.euler_tour[j]
+		if self.height[a] < self.height[b]:
 			return i
 		return j
 
@@ -137,37 +130,53 @@ class LCA():
 			for l in range(self.block_size):
 				self.blocks[mask][l][l] = l
 				for r in range(l+1, self.block_size):
+					print(self.blocks)
 					self.blocks[mask][l][r] = self.blocks[mask][l][r-1]
 					if b * self.block_size + r < m:
+						print("self " + str(self.min_by_h(
+							b * self.block_size + self.blocks[mask][l][r], 
+							b * self.block_size + r) ))
 						self.blocks[mask][l][r] = self.min_by_h(
 							b * self.block_size + self.blocks[mask][l][r], 
 							b * self.block_size + r) 
 						- b * self.block_size
+						#if self.blocks[mask][l][r] > 20:
+						print(f"mask = {mask}, l = {l}, r = {r}")
 
 	def lca_in_block(self, b, l, r):
+		print("aici")
+		print(self.blocks[self.block_mask[b]][l][r])
 		return self.blocks[self.block_mask[b]][l][r] + b * self.block_size
 
-	def lca(self, v, u):
+	def lca(self, vector, v, u):
+		print(self.first_visit)
 		l = self.first_visit[v]
 		r = self.first_visit[u]
 		if l > r:
 			l, r = r, l
 		bl = l // self.block_size
+		print(f"r = {r}")
 		br = r // self.block_size
+		print(f"br = {br}")
+		print(f"block_size = {self.block_size}")
 		if bl == br:
-			return self.euler_tour[self.lca_in_block(bl, 1 % self.block_size, r % self.block_size)]
+			return vector[self.euler_tour[
+			self.lca_in_block(bl, 1 % self.block_size, r % self.block_size)]]
 		ans1 = self.lca_in_block(bl, l % self.block_size, self.block_size - 1);
 		ans2 = self.lca_in_block(br, 0, r % self.block_size);
+		print(ans1)
+		print(ans2)
 		ans = self.min_by_h(ans1, ans2);
 		if bl + 1 < br:
 			l = self.log_2[br - bl - 1];
 			ans3 = self.st[bl + 1][l];
 			ans4 = self.st[br - (1 << l)][l];
 			ans = self.min_by_h(ans, self.min_by_h(ans3, ans4));
-		return self.euler_tour[ans]
+		return vector[self.euler_tour[ans]]
 
 
-vector = [22, 123, 2, 10, 25, 6, 90, 95, 92, 1, 5, 7, 21, 42, 2, 1, 4, 5, 22, 10, 3, 99, 1, 4]
+vector = [83, 112, 163, 121, 85, 66, 120, 70, 195, 156, 20, 176, 156, 61, 4, 23, 141, 168, 82, 156, 106, 56, 21, 17, 176, 130, 164,
+ 56, 14, 132, 56, 116, 87, 167, 122, 103, 4, 119, 166, 11 ]
 #vector = [6, 9, 2, 4, 7, 8, 5, 8, 3, 7]
 N = len(vector)
 parent = [-1 for i in range(N)]
@@ -202,9 +211,8 @@ for i in range(N):
 			nodes[parent[i]].setRight(current_node)
 		else:
 			nodes[parent[i]].setLeft(current_node)
-#preorder(root)
+
 rmq = LCA(N)
 rmq.precompute_lca(root)
-a = rmq.lca(17, 20)
+a = rmq.lca(vector, 0, 31)
 print(a)
-print(vector[a])
