@@ -66,8 +66,13 @@ class RMQFCB():
 			self.euler_tour.append(v)
 
 	def minByH(self, i, j):
+		if(i >= len(self.euler_tour)):
+			i = len(self.euler_tour) - 1
+		if(j >= len(self.euler_tour)):
+			j = len(self.euler_tour) - 1
 		a = self.euler_tour[i]
 		b = self.euler_tour[j]
+		return i if self.height[a] < self.height[b] else j
 		if self.height[a] < self.height[b]:
 			return i
 		return j
@@ -100,7 +105,7 @@ class RMQFCB():
 			if j == 0 or self.minByH(i, self.st[b][0]) == i:
 				self.st[b][0] = i
 			j += 1
-		for l in range(1, self.log_2[self.block_cnt]):
+		for l in range(1, self.log_2[self.block_cnt] + 1):
 			for i in range(self.block_cnt):
 				ni = i + (1 << (l - 1))
 				if ni >= self.block_cnt:
@@ -117,27 +122,21 @@ class RMQFCB():
 				j = 0
 				b += 1
 			if j > 0 and (i >= m or self.minByH(i - 1, i) == i - 1):
-				self.block_mask[b] += 1 << (j - 1) 
+				self.block_mask[b] += 1 << (j - 1)
 			j += 1
-
-		# precompute RMQ for each block
 		possibilities = 1 << (self.block_size - 1)
 		self.blocks = [[] for i in range(possibilities)]
 		for b in range(self.block_cnt):
 			mask = self.block_mask[b]
 			if len(self.blocks[mask]) != 0:
 				continue
-			self.blocks[mask] = [ [0 for i in range(self.block_size)] 
-								for j in range(self.block_size) ]
+			self.blocks[mask] = [[0 for i in range(self.block_size)] for j in range(self.block_size)]
 			for l in range(self.block_size):
 				self.blocks[mask][l][l] = l
-				for r in range(l+1, self.block_size):
-					self.blocks[mask][l][r] = self.blocks[mask][l][r-1]
+				for r in range(l + 1, self.block_size):
+					self.blocks[mask][l][r] = self.blocks[mask][l][r - 1]
 					if b * self.block_size + r < m:
-						self.blocks[mask][l][r] = self.minByH(
-							b * self.block_size + self.blocks[mask][l][r], 
-							b * self.block_size + r) 
-						- b * self.block_size
+						self.blocks[mask][l][r] = self.minByH(b * self.block_size + self.blocks[mask][l][r],b * self.block_size + r) - b * self.block_size
 
 	def lcaInBlock(self, b, l, r):
 		return self.blocks[self.block_mask[b]][l][r] + b * self.block_size
@@ -151,15 +150,15 @@ class RMQFCB():
 		br = r // self.block_size
 		if bl == br:
 			return self.vector[self.euler_tour[
-			self.lcaInBlock(bl, 1 % self.block_size, r % self.block_size)]]
-		ans1 = self.lcaInBlock(bl, l % self.block_size, self.block_size - 1);
-		ans2 = self.lcaInBlock(br, 0, r % self.block_size);
-		ans = self.minByH(ans1, ans2);
+			self.lcaInBlock(bl, l % self.block_size, r % self.block_size)]]
+		ans1 = self.lcaInBlock(bl, l % self.block_size, self.block_size - 1)
+		ans2 = self.lcaInBlock(br, 0, r % self.block_size)
+		ans = self.minByH(ans1, ans2)
 		if bl + 1 < br:
-			l = self.log_2[br - bl - 1];
-			ans3 = self.st[bl + 1][l];
-			ans4 = self.st[br - (1 << l)][l];
-			ans = self.minByH(ans, self.minByH(ans3, ans4));
+			l = self.log_2[br - bl - 1]
+			ans3 = self.st[bl + 1][l]
+			ans4 = self.st[br - (1 << l)][l]
+			ans = self.minByH(ans, self.minByH(ans3, ans4))
 		return self.vector[self.euler_tour[ans]]
 
 	def preprocess(self):
@@ -168,8 +167,3 @@ class RMQFCB():
 
 	def RMQ(self, x, y):
 		return self.lca(x, y)
-
-#vector = [5, 123, 24, 120, 25, 6, 90, 95, 92, 1, 5, 7, 21, 42, 2, 1, 4, 5, 22, 10, 3, 99, 1, 4]
-#farach = RMQFCB(vector)
-#farach.preprocess()
-#print(farach.RMQ(0, 1))

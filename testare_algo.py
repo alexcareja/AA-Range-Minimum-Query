@@ -9,11 +9,11 @@ N_TESTS = 11
 DOTS = 31
 
 inp = Input()
-for t in range(2,N_TESTS):
-	inp.readData(f"test{t}.in")
+for t in range(0,N_TESTS):
+	inp.readData(f"in/test{t}.in")
 	#algo = RMQSparse(inp.getVector())
-	#algo = RMQFCB(inp.getVector())
-	algo = RMQSegment(inp.getVector())
+	algo = RMQFCB(inp.getVector())
+	#algo = RMQSegment(inp.getVector())
 	algo.preprocess()
 	passed = True
 	with open(f"out/test{t}.out", "w") as file:
@@ -22,7 +22,7 @@ for t in range(2,N_TESTS):
 			file.write(str(result))
 			file.write("\n")
 
-for t in range(2,N_TESTS):
+for t in range(0,N_TESTS):
 	refFile = f"ref/test{t}.ref"
 	outFile = f"out/test{t}.out"
 	if filecmp.cmp(refFile, outFile):

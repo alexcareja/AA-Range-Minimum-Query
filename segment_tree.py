@@ -16,9 +16,7 @@ class RMQSegment():
         return s + (e - s) // 2
 
     def RMQUtil(self, start_seg, end_seg, x, y, index) : 
-        # If segment of this node is a part  
-        # of given range, then return  
-        # the min of the segment  
+        # part of the given range 
         if (x <= start_seg and y >= end_seg) : 
             return self.seg_tree[index]    
         # outside of the given range  
@@ -30,18 +28,11 @@ class RMQSegment():
             self.RMQUtil(mid + 1, end_seg, x, y, 2 * index + 2))
 
     def constructSTUtil(self, start_seg, end_seg, current) : 
-      
-        # If there is one element in vectoray,  
-        # store it in current node of  
-        # segment tree and return  
         if (start_seg == end_seg) : 
       
             self.seg_tree[current] = self.vector[start_seg]  
             return self.vector[start_seg]  
-      
-        # If there are more than one elements,  
-        # then recur for left and right subtrees  
-        # and store the minimum of two values in this node  
+  
         mid = self.getMid(start_seg, end_seg)  
         self.seg_tree[current] = self.minVal(self.constructSTUtil(start_seg, mid, current * 2 + 1),
                         self.constructSTUtil(mid + 1, end_seg, current * 2 + 2))  
