@@ -1,8 +1,8 @@
 from rmq_banal import RMQ_banal
-from Input_Class import Input
+from input_class import Input
 
 #set number of tests
-N_TESTS = 11
+N_TESTS = 30
 
 inp = Input()
 for t in range(N_TESTS):

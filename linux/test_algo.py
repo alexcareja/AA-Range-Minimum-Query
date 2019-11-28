@@ -6,7 +6,7 @@ from input_class import Input
 import filecmp
 import sys
 
-N_TESTS = 10
+N_TESTS = 30
 DOTS = 31
 
 algo_name = sys.argv[1]
