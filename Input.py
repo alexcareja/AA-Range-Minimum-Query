@@ -13,7 +13,14 @@ class Input():
 	def getIndexes(self):
 		return self.indexes
 
+	def clean(self):
+		self.vector = []
+		self.indexes = []
+		self.N = 0
+		self.M = 0
+
 	def readData(self, in_file):
+		self.clean()
 		data = []
 		with open(in_file, "r") as file:
 			for line in file:
