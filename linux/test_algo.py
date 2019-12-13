@@ -32,7 +32,7 @@ for t in range(N_TESTS):
 			file.write(str(result))
 			file.write("\n")
 
-for t in range(0,N_TESTS):
+for t in range(N_TESTS):
 	refFile = f"out/test{t}.out"
 	outFile = f"test{t}.out"
 	if filecmp.cmp(	refFile, outFile):

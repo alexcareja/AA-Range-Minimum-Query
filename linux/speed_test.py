@@ -40,7 +40,7 @@ def testBasic(vector, indexes):
 		
 
 inp = Input()
-inp.readData("in/big_test.in")
+inp.readData("in/speedNM_test4.in")
 algo = None
 if algo_name == "sparse":
 	algo = RMQSparse(inp.getVector())

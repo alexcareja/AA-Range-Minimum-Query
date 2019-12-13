@@ -1,13 +1,13 @@
 from random import randint
 
 #change to diversify tests
-NO_TESTS = 30
-MAX_INT = 500000
+NO_TESTS = 8
+MAX_INT = 100000
 MIN_QUERIES = 10
-N = 500
+N = 10000
 #b = randint(0, 4000)
 #M = max(MIN_QUERIES , b)
-M = 100000
+M = 10000
 
 def genIndexTuple(N):
 	(x, y) = (randint(0, N - 1), randint(0,N - 1))
@@ -30,10 +30,9 @@ def genInFile(index):
 	for i in range(0, M):
 		while True:
 			(x, y) = genIndexTuple(N)
-			if (x, y) not in indexes and x != y:
-				indexes.append((x, y))
-				break
-	with open(f"test{index}.in", "w") as file:
+			indexes.append((x, y))
+			break
+	with open(f"speedNM_test{index}.in", "w") as file:
 		file.write(str(N) + '\n')
 		file.write(str(M) + '\n')
 		for num in vector:
@@ -42,5 +41,7 @@ def genInFile(index):
 			file.write("\n" + str(x) + " " + str(y))
 	return
 
-for i in range(1):
+for i in range(NO_TESTS):
 	genInFile(i)
+	M = M * 2
+	N = N * 2
